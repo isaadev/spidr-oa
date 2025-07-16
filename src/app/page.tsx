@@ -1,103 +1,84 @@
+'use client';
+import { useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    guess: "",
+    pin: "",
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    let formattedValue = value;
+
+    if (name === "pin") {
+      formattedValue = value.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1-").slice(0, 19);
+    }
+
+    setForm({ ...form, [name]: formattedValue });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+    const isPhoneValid = /^\d+$/.test(form.phone);
+
+    if (!isEmailValid) {
+      alert("Please enter a valid email.");
+      return;
+    }
+    if (!isPhoneValid) {
+      alert("Phone number must contain only digits.");
+      return;
+    }
+    console.log(form);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-12">
+      {/* maybe this color for text B9BCC3  + motion form so it pops up on reload */}
+      <motion.form
+        onSubmit={handleSubmit}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        // 479dafe6
+        className="bg-[#1C1D1E] text-white w-full max-w-xl p-8 rounded-xl space-y-6 shadow-lg"
+      >
+        <Image
+          src="/spidr-logo.png"
+          alt="Spidr logo"
+          width={60}
+          height={60}
+          className="mx-auto mb-4"
+        />
+
+
+        <h3 className="text-2xl text-center">Air Fryer Interest Form</h3>
+
+        {/* first and last name on same line */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <input name="firstName" placeholder="First Name" value={form.firstName} onChange={handleChange} className="flex-1 p-1 text-white w-full bg-transparent border-0 border-b border-gray-500 focus:outline-none focus:border-[#479dafe6] placeholder-gray-500 transition-colors duration-300" required />
+          <input name="lastName" placeholder="Last Name" value={form.lastName} onChange={handleChange} className="flex-1 p-1 text-white w-full bg-transparent border-0 border-b border-gray-500 focus:outline-none focus:border-[#479dafe6] placeholder-gray-500 transition-colors duration-300" required />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* remaining fields */}
+        <div className="space-y-4">
+          <input type="tel"  name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} className="w-full p-1 bg-transparent border-0 border-b border-gray-500 focus:outline-none focus:border-[#479dafe6] placeholder-gray-500 transition-colors duration-300" required />
+          <input type="email" name="email" placeholder="Email Address" value={form.email} onChange={handleChange} className="w-full p-1 mb-6 bg-transparent border-0 border-b border-gray-500 focus:outline-none focus:border-[#479dafe6] placeholder-gray-500 transition-colors duration-300" required />
+          <input type="number" name="guess" placeholder="Guess the Air Fryer’s Cost ($)" value={form.guess} onChange={handleChange} className="w-full p-1  bg-transparent border-0 border-b border-gray-500 focus:outline-none focus:border-[#479dafe6] placeholder-gray-500 transition-colors duration-300" required />
+          <input name="pin" placeholder="####-####-####-####" value={form.pin} onChange={handleChange} maxLength={19} className="w-full p-1 mb-4 bg-transparent border-0 border-b border-gray-500 focus:outline-none placeholder-gray-500 focus:border-[#479dafe6] transition-colors duration-300 text-white tracking-widest" required />
+        </div>
+
+        <button type="submit" className="w-full bg-[#479dafe6] text-white py-3 rounded active:text-sm hover:bg-[#1C1D1E] hover:text-[#479dafe6] hover:border-[1px] hover:border-[#479dafe6]  transition-all duration-250">Submit</button>
+      </motion.form>
     </div>
   );
 }
